@@ -39,7 +39,15 @@ args = argparse.Namespace(
     char_list=[u"あ", u"い", u"う", u"え", u"お"],
     outdir=None,
     seed=1,
-    ctc_type='warpctc'
+    ctc_type="warpctc",
+    report_cer=False,
+    report_wer=False,
+    sym_space="<space>",
+    sym_blank="<blank>",
+    context_residual=False,
+    use_frontend=False,
+    replace_sos=False,
+    tgt_lang=False
 )
 
 

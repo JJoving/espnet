@@ -1,9 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2018 Nagoya University (Tomoki Hayashi)
 #  Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
 
-import argparse
+"""TTS decoding script."""
+
+import configargparse
 import logging
 import os
 import platform
@@ -11,9 +13,20 @@ import subprocess
 import sys
 
 
-def main(args):
-    parser = argparse.ArgumentParser()
+# NOTE: you need this func to generate our sphinx doc
+def get_parser():
+    """Get parser of decoding arguments."""
+    parser = configargparse.ArgumentParser(
+        description='Synthesize speech from text using a TTS model on one CPU',
+        config_file_parser_class=configargparse.YAMLConfigFileParser,
+        formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
     # general configuration
+    parser.add('--config', is_config_file=True, help='config file path')
+    parser.add('--config2', is_config_file=True,
+               help='second config file path that overwrites the settings in `--config`.')
+    parser.add('--config3', is_config_file=True,
+               help='third config file path that overwrites the settings in `--config` and `--config2`.')
+
     parser.add_argument('--ngpu', default=0, type=int,
                         help='Number of GPUs')
     parser.add_argument('--backend', default='pytorch', type=str,
@@ -43,6 +56,12 @@ def main(args):
                         help='Minimum length ratio in decoding')
     parser.add_argument('--threshold', type=float, default=0.5,
                         help='Threshold value in decoding')
+    return parser
+
+
+def main(args):
+    """Run deocding."""
+    parser = get_parser()
     args = parser.parse_args(args)
 
     # logging info
